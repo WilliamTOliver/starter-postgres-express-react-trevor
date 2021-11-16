@@ -1,16 +1,14 @@
 process.env.NODE_ENV = 'test';
 
 const request = require('supertest');
-const migrate = require('../scripts/db-migrate');
 const seed = require('../scripts/db-seed');
 const App = require('./app');
 
 describe('Run basic server tests', () => {
   let app = {};
 
-  // Run migrations, clear DB, then seeding
+  // Clear DB, then seed
   beforeAll(async () => {
-    await migrate();
     const { db } = await seed.openDB();
     await seed.clearDB(db);
     await seed.seed(db);
@@ -20,6 +18,13 @@ describe('Run basic server tests', () => {
   // Wait for the app to load
   beforeAll(async () => {
     app = await App();
+  }, 30000);
+
+  // Clear DB to prevent side effects
+  afterAll(async () => {
+    const { db } = await seed.openDB();
+    await seed.clearDB(db);
+    await seed.closeDB(db);
   }, 30000);
 
   it('should have a successful DB connection', () => {
