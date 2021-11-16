@@ -8,7 +8,7 @@ describe('loadPosts', () => {
     it('calls posts.batchCreate with 10k posts', async () => {
       const posts = { batchInsert: jest.fn().mockResolvedValue({ test: true }) };
 
-      await loadPosts(jest.fn(), jest.fn(), posts);
+      await loadPosts(posts);
 
       expect(posts.batchInsert).toHaveBeenCalled();
 
