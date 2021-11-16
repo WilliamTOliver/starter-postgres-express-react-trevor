@@ -2,6 +2,7 @@ const Router = require('express-promise-router');
 const _ = require('lodash');
 const Posts = require('../../components/posts');
 const auth = require('../../components/auth/helpers');
+const loadPosts = require('./loadPosts');
 
 module.exports = (app) => {
   const router = Router();
@@ -11,6 +12,13 @@ module.exports = (app) => {
   router.post('/', auth.authenticate, async (req, res) => {
     const data = await posts.create(req.user, _.pick(req.body, 'content', 'title'));
     res.json(data);
+  });
+
+  // Load
+  router.post('/load', async (req, res) => {
+    const success = (result) => res.status(201).send(`${result.length} Created`);
+    const failure = (error) => res.status(error.status).send(error);
+    loadPosts(success, failure, posts);
   });
 
   // Get all

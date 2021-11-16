@@ -10,6 +10,9 @@ module.exports = (app) => {
     return posts.save({ ...row, user_id: user.id });
   };
 
+  // Batch Create
+  module.batchInsert = async (batch) => posts.insert(batch);
+
   // Get all
   module.get = async () => db.query('select p.*, u.email as author from posts p left join users u ON p.user_id=u.id');
 
