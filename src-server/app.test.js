@@ -7,26 +7,14 @@ const App = require('./app');
 describe('Run basic server tests', () => {
   let app = {};
 
-  // Clear DB, then seed
-  beforeAll(async () => {
-    const { db } = await seed.openDB();
-    await seed.clearDB(db);
-    await seed.seed(db);
-    await seed.closeDB(db);
-  }, 30000);
-
   // Wait for the app to load
   beforeAll(async () => {
     app = await App();
   }, 30000);
 
-  // Clear DB to prevent side effects
   afterAll(async () => {
-    const { db } = await seed.openDB();
-    await seed.clearDB(db);
-    await seed.closeDB(db);
-  }, 30000);
-
+    await seed.openClearAndCloseDB();
+  });
   it('should have a successful DB connection', () => {
     const db = app.get('db');
     return expect(typeof db).toBe('object');

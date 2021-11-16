@@ -6,11 +6,9 @@ const App = require('../../app');
 describe('loadPosts', () => {
   describe('integration', () => {
     it('calls posts.batchCreate with 10k posts', async () => {
-      const successCb = jest.fn();
-      const failureCb = jest.fn();
       const posts = { batchInsert: jest.fn().mockResolvedValue({ test: true }) };
 
-      await loadPosts(successCb, failureCb, posts);
+      await loadPosts(jest.fn(), jest.fn(), posts);
 
       expect(posts.batchInsert).toHaveBeenCalled();
 
@@ -19,12 +17,13 @@ describe('loadPosts', () => {
     });
   });
 
-  describe('e2e', () => {
+  describe('smoke test', () => {
     describe('when calling posts/load', () => {
-      it('responds with 200 to [POST /posts/load]', async (done) => {
-        const { db } = await seed.openDB();
-        await seed.clearDB(db);
+      afterAll(async () => {
+        await seed.openClearAndCloseDB();
+      });
 
+      it('responds with 200 to [POST /posts/load]', async (done) => {
         const app = await App();
 
         request(app).post('/api/posts/load').expect(201).end((loadErr) => {
@@ -32,8 +31,6 @@ describe('loadPosts', () => {
           request(app).get('/api/posts').expect(200).end(async (getErr, getRes) => {
             if (getErr) done(getErr);
             expect(getRes.body.length).toEqual(10000);
-            await seed.clearDB(db);
-            await seed.closeDB(db);
             done();
           });
         });

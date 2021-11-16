@@ -77,10 +77,16 @@ function closeDB(db) {
   return db.instance.$pool.end();
 }
 
+async function openClearAndCloseDB() {
+  const { db } = await openDB();
+  await clearDB(db);
+  await closeDB(db);
+}
+
 if (require.main === module) {
   openDB().then(db => seed(db.db));
 } else {
   module.exports = {
-    openDB, seed, clearDB, closeDB
+    openDB, seed, clearDB, closeDB, openClearAndCloseDB
   };
 }
