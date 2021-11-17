@@ -15,12 +15,17 @@ module.exports = (app) => {
   });
 
   // Load
-  router.post('/load', (req, res) => loadPosts(posts)
-    .then((result) => res.status(201).send(`${result.length} Created`))
-    .catch((error) => res.status(500).send({
-      message: 'Failed to load posts',
-      raw: JSON.stringify(error)
-    })));
+  router.post('/load', auth.authenticate, async (req, res) => {
+    try {
+      const data = await loadPosts(posts);
+      res.status(201).send(`${data.length} Created`);
+    } catch (error) {
+      res.status(500).send({
+        message: 'Failed to load posts',
+        raw: JSON.stringify(error)
+      });
+    }
+  });
 
   // Get all
   router.get('/', auth.authenticate, async (req, res) => {
