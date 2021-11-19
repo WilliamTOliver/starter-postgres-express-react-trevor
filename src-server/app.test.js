@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test';
-
 const request = require('supertest');
 const seed = require('../scripts/db-seed');
 const App = require('./app');

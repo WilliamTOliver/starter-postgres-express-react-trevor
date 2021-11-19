@@ -96,8 +96,8 @@
     "pg-migrate": "node-pg-migrate",
     "db:migrate": "node scripts/db-migrate",
     "db:seed": "npm run db:migrate && node scripts/db-seed.js",
-    "test:client": "NODE_ENV=test && node scripts/test.js --env=jsdom",
-    "test:server": "NODE_ENV=test && node scripts/test.js --config=config/jest/server.json",
+    "test:client": "node scripts/test.js --env=jsdom",
+    "test:server": "npm run db:migrate && node scripts/test.js --config=config/jest/server.json",
     "update-version": "npm --no-git-tag-version version patch"
   },
   "husky": {
